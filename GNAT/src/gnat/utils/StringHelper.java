@@ -64,7 +64,7 @@ public class StringHelper {
 	 * @return
 	 */
 	public static String escapeString (String string) {
-		return string.replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\{\\}\\\\])", "\\\\$1");
+		return string.replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\?\\{\\}\\\\])", "\\\\$1");
 	}
 
 	/**
