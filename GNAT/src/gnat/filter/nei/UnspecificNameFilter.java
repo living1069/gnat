@@ -187,7 +187,7 @@ public class UnspecificNameFilter implements Filter {
 		if (term.matches("^(aa|bp\\s[0-9]{1,2}|kd|mg|Ki|nM|CD|Sci|Proc|Acad" +
 				//"|[\\d\\.]+[\\s\\-]?[Kk][Dd][Aa]" +
 				
-				"|or in|and [1Ii]|[Aa] gene"+
+				"|and [1Ii]|[Aa] gene"+
 				
 				//typical error when converting PDF to text: white space between every pair of characters, producing a ton of (NER) FP
 				"|. .|. . .|. . .( .)+" +
@@ -195,9 +195,9 @@ public class UnspecificNameFilter implements Filter {
 				//"|a [ACGTU]|\\d+ h|[Aa]\\sC" + // removed after adding ". ."
 				
 				
-				"|as a|a PS|or if|or is|[A-Za-z] or|a part|[A-Za-z][A-Za-z] as" + // "HR as"
+				"|as a|a PS|or if|or is|or in|[A-Za-z] or|a part|[A-Za-z][A-Za-z] as" + // "HR as"
 				"|and \\d+|or \\d+|an \\d+|for \\d+|is \\d+|[Aa]t\\d+" +
-				"|is [VvIiXx]" +
+				"|is [VvIiXx]|[A-Z] at" +
 				"|per \\d+|OR \\d+|six \\d+|F \\d+" +
 				//"|or \\d+|at \\d+|is \\d+" +
 				"|at \\d+ d|s to|acid 2|HS is" + 
@@ -360,7 +360,8 @@ public class UnspecificNameFilter implements Filter {
 	public static boolean isUnspecificSingleWordCaseInsensitive (String name) {
 		return name.toLowerCase().trim().matches("(for|in|of|at|an" +
 				"|milk|cycling|enabled|blast|lipase|golgi|fusion|proteins?|nuclear|sex" + 
-				"|membrane|mitochondrial" +
+				"|membrane|mitochondrial" + 
+				"|oligo|oligo 3|oligo 5" +
 				"|partial|macrophage|condensed|wt)");
 	}
 
