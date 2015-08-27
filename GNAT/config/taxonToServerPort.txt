@@ -1,3 +1,4 @@
+#Tax_ID	Port	Short_name	Long_name
 9606	56001	H. sap	human
 10090	56002	M. mus	mouse	mice
 10116	56003	R. norv	rat
