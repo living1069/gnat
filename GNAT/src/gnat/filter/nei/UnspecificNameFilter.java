@@ -62,7 +62,7 @@ public class UnspecificNameFilter implements Filter {
 			TextAnnotation annotation = recognizedGeneName.getAnnotation();
 			String sentence = text.getSentenceAround(annotation.getTextRange().getBegin());
 			// mask any characters that have a meaning in reg.exes
-			String maskedGeneName = StringHelper.espaceString(recognizedGeneName.getName());
+			String maskedGeneName = StringHelper.escapeString(recognizedGeneName.getName());
 
 			//
 			String reason = "";
@@ -386,7 +386,7 @@ public class UnspecificNameFilter implements Filter {
 		if (name.length() > 2) return false;
 		// fruit fly names can have one or two characers: a, e, v, ... so skip those
 		if (name.length() <= 2 && !speciesIDs.contains(7227)) {
-			String maskedName = StringHelper.espaceString(name);
+			String maskedName = StringHelper.escapeString(name);
 			if (sentence.matches(".*[\\s\\(]" + maskedName + "[\\s\\,\\)]([^\\s]+\\s)?(gene|protein|locus|loci)s?.*")) return false;
 			if (sentence.matches(".*(gene|protein|locus\\sfor|loci\\sfor)s?[\\s\\,\\)]([^\\s]+\\s)?[\\(\\s]?" + maskedName + "[\\s\\,\\)].*")) return false;
 			return true;
@@ -517,7 +517,7 @@ public class UnspecificNameFilter implements Filter {
 	 */
 	public static boolean isCellLine (String name, String sentence) {//, String text) {
 		// mask any characters that have a meaning in reg.exes
-		String maskedName = StringHelper.espaceString(name);
+		String maskedName = StringHelper.escapeString(name);
 		
 		if (sentence.matches(".*" + leftWordBoundary  + maskedName + rightWordBoundary + "(cell|culture)s?.*"))
 			return true;
@@ -565,8 +565,8 @@ public class UnspecificNameFilter implements Filter {
 	 */
 	public static boolean isChromosome (String name, String sentence) {
 		if (!name.matches("(X|Y|[\\d]+[pq](\\.[\\d\\.]+)?)")) return false;
-		name = StringHelper.espaceString(name);
-		String maskedName = StringHelper.espaceString(name);
+		name = StringHelper.escapeString(name);
+		String maskedName = StringHelper.escapeString(name);
 		return sentence.matches(".*(chromosome " + maskedName + "|" + maskedName + " chromosome).*");
 	}
 	
@@ -583,7 +583,7 @@ public class UnspecificNameFilter implements Filter {
 	 * @return 
 	 */
 	public static boolean isNegativePair (String name, String sentence) {
-		String maskedName = StringHelper.espaceString(name);
+		String maskedName = StringHelper.escapeString(name);
 		if (name.equals("LPS") && sentence.matches(".*(induce|administ|stimulat).*")) return true;
 		if (name.equals("GST") && sentence.matches(".*(pull\\-?down|assay|fusion|purification|\\Wtag\\W|blotting|anti\\-?body).*")) return true;
 		if (name.equalsIgnoreCase("polymerase") && sentence.matches(".*(chain[\\-\\s]?reaction|PCR|Pcr).*")) return true;
@@ -601,7 +601,7 @@ public class UnspecificNameFilter implements Filter {
 	 */
 	public static boolean textHasPlural (String name, String text) {
 		// in-general mention
-		name = StringHelper.espaceString(name);
+		name = StringHelper.escapeString(name);
 		try {
 			if (text.matches(".*[\\s\\(\\[\"]" + name + "s[\\s\\,\\.\\]\\)\"].*")
 					// but not a reference to a group of similar genes

@@ -63,7 +63,7 @@ public class StringHelper {
 	 * @param string
 	 * @return
 	 */
-	public static String espaceString (String string) {
+	public static String escapeString (String string) {
 		return string.replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\{\\}\\\\])", "\\\\$1");
 	}
 
@@ -742,7 +742,7 @@ public class StringHelper {
 	};
 
 	public static void main(String[] args){
-		System.out.println(StringHelper.espaceString("patient + abc - \\ "));		
+		System.out.println(StringHelper.escapeString("patient + abc - \\ "));		
 	}
 }
 

@@ -341,7 +341,7 @@ public class SpeciesValidationFilter implements Filter {
 		
 		String copy = text;
 		for (String name: list) {
-			name = StringHelper.espaceString(name);
+			name = StringHelper.escapeString(name);
 			if (copy.indexOf(name) >= 0)
 				containsTaxIds.add(name2tax.get(name));
 			copy = copy.replaceAll(name, "");

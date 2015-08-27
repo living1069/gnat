@@ -80,7 +80,7 @@ public class ImmediateContextFilter implements Filter {
 			}
 
 			// next, check for unspecific names
-			String maskedName = StringHelper.espaceString(name);
+			String maskedName = StringHelper.escapeString(name);
 			if ( (UnspecificNameFilter.isUnspecific(name)
 					|| UnspecificNameFilter.isUnspecificSingleWordCaseInsensitive(name)
 					|| UnspecificNameFilter.isUnspecificSingleWord(name)
@@ -180,8 +180,8 @@ public class ImmediateContextFilter implements Filter {
 			if(!keepShortFormName){
 				// check if long form, at least, contains one of the following keywords
 				String sentence = shortForm.getText().getSentenceAround(shortForm.getAnnotation().getTextRange().getBegin());
-				String lfCopy = StringHelper.espaceString(longFormName);
-				String sfCopy = StringHelper.espaceString(shortForm.getName());
+				String lfCopy = StringHelper.escapeString(longFormName);
+				String sfCopy = StringHelper.escapeString(shortForm.getName());
 				String lowerCaseLongForm = longFormName.toLowerCase();
 				if(lowerCaseLongForm.contains("protein")
 								|| lowerCaseLongForm.contains("gene")

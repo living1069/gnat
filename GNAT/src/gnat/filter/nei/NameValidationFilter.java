@@ -60,7 +60,7 @@ public class NameValidationFilter implements Filter {
 
 			String myName = recognizedGeneName.getName().toLowerCase();
 			// escape certain characters so that myName can later be used in reg.exes
-			myName = StringHelper.espaceString(myName);
+			myName = StringHelper.escapeString(myName);
 			
 			//if (myName.matches(".*[\\s\\-0-9].*"))
 			if (myName.matches(".*[0-9A-Z].*") && myName.length() > 4)
@@ -85,7 +85,7 @@ public class NameValidationFilter implements Filter {
 				
 				boolean foundAnotherName = false;
 				for (String name: names) {
-					name = StringHelper.espaceString(name);
+					name = StringHelper.escapeString(name);
 					if (text.matches(".*(^|[\\s\\(\\[])" + name + "([\\s\\,\\.\\)\\]\\;\\:]|$).*")) {
 						foundAnotherName = true;
 						if (ConstantsNei.OUTPUT_LEVEL.compareTo(ConstantsNei.OUTPUT_LEVELS.DEBUG) >= 0)
@@ -117,7 +117,7 @@ public class NameValidationFilter implements Filter {
 //		System.out.println(x);
 		
 		String myOriginalName = "glutamate/h(+) symporter";
-		String myName = StringHelper.espaceString(myOriginalName);
+		String myName = StringHelper.escapeString(myOriginalName);
 		System.out.println(myOriginalName);
 		System.out.println(myName);
 		
