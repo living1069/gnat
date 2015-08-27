@@ -222,11 +222,11 @@ public class Context {
 	 * 	Adds a recognized entity together with a bunch of id candidates to this context.
 	 * */
 	public void addRecognizedEntity1(RecognizedEntity recognizedEntity, String[] idCandidates){
-		String nameKey = recognizedEntity.getName() + "/" + recognizedEntity.getText().PMID + "/"
-			+ recognizedEntity.getBegin() + "/" + recognizedEntity.getEnd();
-		String cands = "";
-		for (String cnd: idCandidates)
-			cands += " " + cnd;
+		//String nameKey = recognizedEntity.getName() + "/" + recognizedEntity.getText().PMID + "/"
+		//	+ recognizedEntity.getBegin() + "/" + recognizedEntity.getEnd();
+		//String cands = "";
+		//for (String cnd: idCandidates)
+		//	cands += " " + cnd;
 		//System.out.println("#1stNER: adding " + nameKey + " " + cands);
 		
 		if (identificationStatusMap.containsKey(recognizedEntity)) {

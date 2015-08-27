@@ -20,6 +20,7 @@ import java.util.Set;
 public class ISGNProperties {
 
 	/** */
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = -1379194214752346825L;
 
 	/** */

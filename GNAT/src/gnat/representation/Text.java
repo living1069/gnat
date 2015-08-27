@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.io.Writer;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -435,7 +434,7 @@ public class Text {
 		int startpos = temp.lastIndexOf(". ") + 2;
 		
 		//System.out.println("temp-6: '" + temp.substring(startpos-6) + "'");
-		if (startpos > 5 && temp.substring(startpos-6).matches("( e\\.g|\\.\\sal|.\\svs)\\.\\s.*"))
+		if (startpos > 5 && temp.substring(startpos-6).matches("( e\\.g|i\\.e|\\.\\sal|\\svs)\\.\\s.*"))
 			startpos = temp.lastIndexOf(". ", startpos-6);
 		
 		//System.out.println();
@@ -741,8 +740,8 @@ public class Text {
 		annotatedXml = annotatedXml.replaceAll("\\<\\/=", "&lt;/="); // in PubMed 9618483 "share </=50% identity"
 		//
 		annotatedXml = annotatedXml.replaceAll("\\s\\>([\\d\\.\\s])", " &gt;$1");
-		//annotatedXml = annotatedXml.replaceAll("±", "&plusmn;");
-		//annotatedXml = annotatedXml.replaceAll("±", "plus/minus");
+		//annotatedXml = annotatedXml.replaceAll("", "&plusmn;");
+		//annotatedXml = annotatedXml.replaceAll("", "plus/minus");
 		//annotatedXml = annotatedXml.replaceAll("([Pp]\\s*<)", "$1&lt;");
 
 		//System.err.println("-----");

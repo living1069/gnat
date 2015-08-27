@@ -42,21 +42,21 @@ import uk.ac.man.documentparser.input.DocumentIterator;
 public class TextFactory {
 
 	/** Stores a mapping from PubMed IDs to GO codes; will be added to a Text's ContextModel. */
-	static Map<Integer, Set<Integer>> pubmed2gocodes = new HashMap<Integer, Set<Integer>>();
+	static Map<Integer, Set<Integer>> pubmed2gocodes = new HashMap<Integer, Set<Integer>>(100000);
 	/** Stores a mapping from PubMed IDs to GO terms; will be added to a Text's ContextModel. */
-	static Map<Integer, Set<String>> pubmed2goterms  = new HashMap<Integer, Set<String>>();
+	static Map<Integer, Set<String>> pubmed2goterms  = new HashMap<Integer, Set<String>>(100000);
 	
-//	/** */
-//	static Set<String> myblacklist = new HashSet<String>();
-//	static Set<String> mywhitelist = new HashSet<String>();
-//	public static void setBlacklist (Collection<String> blacklist) {
-//		myblacklist.clear();
-//		myblacklist.addAll(blacklist);
-//	}
-//	public static void setWhitelist (Collection<String> whitelist) {
-//		mywhitelist.clear();
-//		mywhitelist.addAll(whitelist);
-//	}
+	/** */
+	static Set<String> myblacklist = new HashSet<String>();
+	static Set<String> mywhitelist = new HashSet<String>();
+	public static void setBlacklist (Collection<String> blacklist) {
+		myblacklist.clear();
+		myblacklist.addAll(blacklist);
+	}
+	public static void setWhitelist (Collection<String> whitelist) {
+		mywhitelist.clear();
+		mywhitelist.addAll(whitelist);
+	}
 	
 	/**
 	 * Loads a text repository from the given directories.<br>
@@ -133,6 +133,7 @@ public class TextFactory {
 	 * @return
 	 */
 	public static TextRepository loadTextRepositoryFromMedlineFile (String filename) {
+		//System.err.println("#INFO opening " + filename);
 		TextRepository textRepository = new TextRepository();
 
 		readPubmed2Go();
@@ -403,7 +404,7 @@ public class TextFactory {
 			if (filename.endsWith(".gz")) {
 				//System.err.println("Opening a GZipped files");
 				InputStream fileStream = new FileInputStream(filename);
-				InputStream gzipStream = new GZIPInputStream(fileStream);
+				@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
 				Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
 				br = new BufferedReader(decoder);
 			} else {
@@ -564,8 +565,8 @@ public class TextFactory {
 			if (filename.endsWith(".gz")) {
 				//System.err.println("Opening a GZipped files");
 				InputStream fileStream = new FileInputStream(filename);
-				InputStream gzipStream = new GZIPInputStream(fileStream);
-				Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
+				@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
+				Reader decoder = new InputStreamReader(gzipStream);//, "UTF-8");
 				br = new BufferedReader(decoder);
 			} else {
 				br = new BufferedReader(new FileReader(filename));

@@ -111,14 +111,16 @@ public class AnnotateMedline {
 					           "As a convention, Medline/Pubmed XML files have to be named as such:\n" +
 					           "- medline<year>n<number>.xml(.gz)");
 			System.out.println("Call: AnnotateMedline <dir>");
-			System.out.println(" <dir>     -  directory with one or more .xml or .xml.gz files");
+			System.out.println(" <dir>            -  directory with one or more .xml or .xml.gz files");
 			System.out.println("Optional parameters:");
-			System.out.println(" -g        -  Print only those texts to the output that have a gene");
-			System.out.println(" -v        -  Set verbosity level for progress and debugging information");
-			System.out.println("              Default: 0; warnings: 1, status: 2, ... debug: 6");
-			System.out.println(" --outdir  -  Folder in which to write the output XML");
-			System.out.println("              By default, will write into the current directory.");
+			System.out.println(" -g               -  Print only those texts to the output that have a gene");
+			System.out.println(" -v               -  Set verbosity level for progress and debugging information");
+			System.out.println("                     Default: 0; warnings: 1, status: 2, ... debug: 6");
+			System.out.println(" --outdir <dir>   -  Folder in which to write the output XML");
+			System.out.println("                     By default, will write into the current directory.");
+			System.out.println(" --list <list>    -  Annotate files found in <list>");
 			System.out.println(" --ignore <file>  -  Ignore the files listed in <file>");
+			System.out.println(" --all            -  annotate all XML files in the folder, even those not matching the pattern 'medline<year>n<number>.xml(.gz)'");
 			System.exit(1);
 		}
 		
@@ -127,6 +129,8 @@ public class AnnotateMedline {
 		String outDir = ".";    // 
 		boolean skipNoGeneAbstracts = false;
 		Set<String> xml_files_to_ignore = new HashSet<String>();
+		String filelist_f = "";
+		boolean annotateAllXml = false;
 		for (int a = 0; a < args.length; a++) {
 			// parameter is -v to regulate verbosity at runtime
 			if (args[a].matches("\\-v=\\d+"))
@@ -158,6 +162,10 @@ public class AnnotateMedline {
 					System.err.println("#ERROR reading from file " + ignorefile);
 					System.exit(4);
 				}
+			} else if (args[a].toLowerCase().matches("\\-\\-?list")) {
+				filelist_f = args[++a];
+			} else if (args[a].toLowerCase().matches("\\-\\-?all")) {
+				annotateAllXml = true;
 			} else {
 				dir = args[a];
 				File DIR = new File(dir);
@@ -177,15 +185,15 @@ public class AnnotateMedline {
 			}
 		}
 		
-		if (dir.length() == 0) {
-			System.out.println("Please specify an input directory!");
-			System.exit(1);
-		} else {
+		if (dir.length() == 0 && filelist_f.length() == 0) {
+			System.err.println("Please specify an input directory!");
+			System.exit(2);
+		} else if (dir.length() > 0) {
 			File DIR = new File(dir);
 			if (!DIR.exists()) // || !DIR.isDirectory()) 
 				{
-				//System.out.println("Please specify a valid input directory!");
-				System.exit(1);
+				System.err.println("Please specify a valid input directory!");
+				System.exit(2);
 			}
 		}
 
@@ -207,7 +215,10 @@ public class AnnotateMedline {
 		if (DIR.isDirectory()) {
 			filelist_p = DIR.list();
 			for (String filename: filelist_p) {
-				if (filename.matches("medline\\d+n\\d+\\.xml(\\.gz)?") || filename.matches("outfile\\.\\d+\\.xml(\\.gz)?"))
+				if (filename.matches("medline\\d+n\\d+\\.xml(\\.gz)?")
+						|| filename.matches("outfile\\.\\d+\\.xml(\\.gz)?")
+						|| (annotateAllXml && filename.matches(".+\\.xml(\\.gz)?"))
+						)
 					if (!xml_files_to_ignore.contains(filename))
 						filelist.add(filename);
 			}
@@ -215,15 +226,38 @@ public class AnnotateMedline {
 		} else {
 			String filename = dir.replaceFirst("^(.+)?\\/(.+?)$", "$2"); // get file name part
 			dir = dir.replaceFirst("^(.+)?\\/(.+?)$", "$1");             // get new directory name part
-			if (filename.matches("medline\\d+n\\d+\\.xml(\\.gz)?") || filename.matches("outfile\\.\\d+\\.xml(\\.gz)?"))
+			if (filename.matches("medline\\d+n\\d+\\.xml(\\.gz)?")
+					|| filename.matches("outfile\\.\\d+\\.xml(\\.gz)?")
+					|| (annotateAllXml && filename.matches(".+\\.xml(\\.gz)?"))
+					)
 				if (!xml_files_to_ignore.contains(filename))
 					filelist.add(filename);
 		}
+		
+		//
+		if (filelist_f != null && filelist_f.length() > 0) {
+			File LIST = new File(filelist_f);
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(LIST));
+				String line = "";
+				while ((line = br.readLine()) != null) {
+					if (line.trim().length() > 0 && !line.startsWith("#"))
+						filelist.add(line.trim());
+				}
+				br.close();
+			} catch (IOException ioe) {
+				System.err.println("#ERROR reading file " + filelist_f + ": " + ioe.getMessage());
+				System.exit(4);
+			}
+		}
+		
+		//
 		if (filelist.size() == 0) {
-			System.err.println("Error: found no files matching the naming convention medline12n123.xml or .xml.gz");
+			//System.err.println("Error: found no files matching the naming convention medline12n123.xml or .xml.gz");
+			System.err.println("Error: found no files in the input.");
 			System.exit(1);
 		}
-
+		
 		// loop through all XML files, creating a Run each and process them individually
 		int c_file = 0;
 		long starttime = System.currentTimeMillis();
@@ -254,7 +288,13 @@ public class AnnotateMedline {
 			
 			//////////
 			// INPUT
-			run.setTextRepository(TextFactory.loadTextRepositoryFromMedlineFile(dir + "/" + filename));
+			String relfilename = filename;
+			if (relfilename.indexOf("/") < 0)
+				relfilename = dir + "/" + relfilename;
+			//System.err.println("# " + filename);
+			//System.err.println("# " + relfilename);
+			//run.setTextRepository(TextFactory.loadTextRepositoryFromMedlineFile(dir + "/" + filename));
+			run.setTextRepository(TextFactory.loadTextRepositoryFromMedlineFile(relfilename));
 			
 			//////////
 			// PROCESSING
@@ -361,6 +401,11 @@ public class AnnotateMedline {
 			// (within one XML file)
 			for (Text text: texts) {
 
+				//System.err.println("#INFO title=" + text.title);
+				
+				if (annotateAllXml)
+					text.sourceType = Text.SourceTypes.MEDLINES_XML;
+				
 				// sort entities by position within each text, insert into the text from back to end
 				List<RecognizedEntity> entitiesBackwards = new LinkedList<RecognizedEntity>();
 				entitiesBackwards.addAll(run.context.getRecognizedEntitiesInText(text));
@@ -373,8 +418,13 @@ public class AnnotateMedline {
 
 				// start with the plain text ...
 				String annotatedText = text.plainText;
+				
+				//System.err.println("#INFO plaintext=" + annotatedText);
+				
 				// ... and insert markup for all recognized entities
+				//int cRE = 0;
 				for (RecognizedEntity se: entitiesBackwards) {
+					//System.err.println("RE" + (++cRE));
 					TextAnnotation ta = se.getAnnotation();
 					ta.setType(TextAnnotation.Type.GENE);
 					//System.err.print(text.getID()
@@ -432,8 +482,11 @@ public class AnnotateMedline {
 					annotatedText = annotatedText.substring(0, se.getBegin()) + insert + annotatedText.substring(se.getBegin());
 				}
 
+				System.err.println("#INFO annotated=" + annotatedText);
 				//System.err.println("#Annotated text:\n"+annotatedText+"\n----------");
 
+				//System.err.println("#INFO sourceType=" + text.sourceType.toString());
+				
 				//if (entitiesBackwards.size() == 0) {
 				//	if (ConstantsNei.verbosityAtLeast(ConstantsNei.OUTPUT_LEVELS.WARNINGS))
 				//		ConstantsNei.OUT.println("Found no genes in text " + text.getPMID());
@@ -444,16 +497,35 @@ public class AnnotateMedline {
 					annotatedText = "<text id=\"" + text.getID() + "\">\n" + annotatedText + "\n</text>";
 					text.annotatedXml = annotatedText;
 
-				} else if (text.sourceType == Text.SourceTypes.MEDLINE_XML || text.sourceType == Text.SourceTypes.MEDLINES_XML ) {
+				} else if (text.sourceType == Text.SourceTypes.MEDLINE_XML || text.sourceType == Text.SourceTypes.MEDLINES_XML || annotateAllXml) {
 					// get the first sentence from the text, by finding the first sentence end mark
 					// assumes it is the full title of the paper
 					// TODO better to store (and annotate!) the title separately, since some titles consist of multiple sentences
-					String annotatedTitle = annotatedText.replaceFirst("^(.+?[\\.\\!\\?])\\s.*$", "$1");
+					String[] multilines = annotatedText.split("[\r\n]+");
+					//if (multilines.length > 0) System.err.println("#INFO multiple lines");
+	
+					String annotatedTitle = "";
+					String annotatedTextWithoutTitle  = "";
+					if (multilines.length > 0) {
+						annotatedTitle = multilines[0].replaceFirst("^(.+?[\\.\\!\\?])\\s.*$", "$1");
+						StringBuilder b = new StringBuilder();
+						b.append(multilines[0].replaceFirst("^.+?[\\.\\!\\?]\\s(.*)$", "$1"));
+						b.append("\n");
+						for (int l = 1; l < multilines.length; l++) {
+							System.out.println("#INFO appending " + multilines[l]);
+							b.append(multilines[l] + "\n");
+						}
+						annotatedTextWithoutTitle = b.toString();
+					} else {
+						annotatedTitle = annotatedText.replaceFirst("^(.+?[\\.\\!\\?])\\s.*$", "$1");
+						// assume the 2nd and following sentences are the abstract
+						annotatedTextWithoutTitle = annotatedText.replaceFirst("^.+?[\\.\\!\\?]\\s(.*)$", "$1");
+					}
+					
+					System.err.println("#INFO annotatedTextWithoutTitle = " + annotatedTextWithoutTitle);
+					
 					text.annotateXmlTitle(annotatedTitle);
-
-					// assume the 2nd and following sentences are the abstract
-					String annotatedAbstract = annotatedText.replaceFirst("^.+?[\\.\\!\\?]\\s(.*)$", "$1");
-					text.annotateXmlAbstract(annotatedAbstract);
+					text.annotateXmlAbstract(annotatedTextWithoutTitle);
 				}
 
 				// if the XML tag used to mark gene names has a prefix ("prefix:TAG"), we need to bind this prefix
@@ -467,7 +539,7 @@ public class AnnotateMedline {
 
 				// write annotated text to file:
 				// either into one or more document sets (file(s) with more than one text) ...
-				if (text.sourceType == Text.SourceTypes.MEDLINES_XML) {
+				if (text.sourceType == Text.SourceTypes.MEDLINES_XML || annotateAllXml) {
 					String basefilename = text.filename.replaceFirst("^(.*)\\/([^\\/]+?)$", "$2");
 					if (basefilename.endsWith(".xml.gz"))
 						basefilename = basefilename.replaceFirst("\\.xml\\.gz$", ".annotated.xml");
@@ -477,6 +549,7 @@ public class AnnotateMedline {
 						basefilename = basefilename.replaceFirst(".medline", ".annotated.medline");
 
 					String x = text.toXmlString();
+					System.err.println("#INFO x = " + x);
 					// texts that are part of a collection within one file get stored
 					// in a buffer for that file; we're storing this buffer in memory
 					// and write it to disk, together with appropriate XML root elements,
@@ -497,8 +570,10 @@ public class AnnotateMedline {
 				} else {
 					// we write individual files directly to the disk:
 					String outfileName = text.getID() + ".annotated.xml";
-					if (outDir.length() > 0) text.toXmlFile(outfileName);
-					else					 text.toXmlFile(outDir + "/" + outfileName);
+					//if (outDir.length() > 0) text.toXmlFile(outfileName);
+					//else text.toXmlFile(outDir + "/" + outfileName);
+					if (outDir.length() == 0) text.toXmlFile(outfileName);
+					else text.toXmlFile(outDir + "/" + outfileName);
 				}
 
 				// or, if no gene was recognized in the current text:

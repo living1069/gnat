@@ -62,7 +62,7 @@ FROM `raw_xml`;
 				+ " `gene_xml`.`gene_id` AS `gene_id`, "
 				+ " extractvalue(`gene_xml`.`xml`,'//Gene-commentary/Gene-commentary_products/Gene-commentary/Gene-commentary_source/Other-source/Other-source_src/Dbtag[Dbtag_db=\"UniProtKB/Swiss-Prot\"]/Dbtag_tag/Object-id/Object-id_str/text()') AS `uacc`"
 				+ " FROM `" + DB_SCHEMA_ENTREZGENE + "`.`gene_xml`"
-				//+ " WHERE gene_id <= 25"
+				+ " WHERE gene_id = 7157"
 				+ " ORDER BY `gene_id` ASC");
 		while (rs_id_map.next()) {
 			int gene_id = rs_id_map.getInt("gene_id");
@@ -78,8 +78,8 @@ FROM `raw_xml`;
 		rs_id_map.close();
 		
 		//updateProteinFunction(conn, gene_to_proteins);
-		//updateProteinDisease(conn, gene_to_proteins);
-		updateProteinKeywords(conn, gene_to_proteins);
+		updateProteinDisease(conn, gene_to_proteins);
+		//updateProteinKeywords(conn, gene_to_proteins);
 		
 		
 		
@@ -180,12 +180,22 @@ FROM `raw_xml`;
 			Set<String> uaccs = gene_to_proteins.get(gene_id);
 			for (String uacc : uaccs) {
 				ResultSet rs_function_terms = statement2.executeQuery(
-					  "SELECT `acc` AS `acc`,"
-					+ " extractvalue(`xml`, '/entry/comment[@type=\"disease\"]/disease/name"
-					+ "|/entry/comment[@type=\"disease\"]/disease/acronym"
-					+ "|/entry/comment[@type=\"disease\"]/disease/description"
-					+ "|/entry/comment[@type=\"disease\"]/text') AS `disease`"
-					+ " FROM `" + DB_SCHEMA_UNIPROT + "`.`raw_xml` WHERE acc=\"" + uacc + "\"");
+//					  "SELECT `acc` AS `acc`,"
+//					+ " extractvalue(`xml`, '/entry/comment[@type=\"disease\"]/disease/name"
+//					+ "|/entry/comment[@type=\"disease\"]/disease/acronym"
+//					+ "|/entry/comment[@type=\"disease\"]/disease/description"
+//					+ "|/entry/comment[@type=\"disease\"]/text') AS `disease`"
+//					+ " FROM `" + DB_SCHEMA_UNIPROT + "`.`raw_xml` WHERE acc=\"" + uacc + "\"");
+						"SELECT `acc`, EXTRACTVALUE_ALL ("
+				        + "(SELECT `xml` FROM `" + DB_SCHEMA_UNIPROT + "`.`raw_xml`"
+						+ " WHERE acc=\"" + uacc + "\"),"
+						+ " '/entry/comment[@type=\"disease\"]/disease/name"
+						 + "|/entry/comment[@type=\"disease\"]/disease/acronym"
+					 	 + "|/entry/comment[@type=\"disease\"]/disease/description"
+						 + "|/entry/comment[@type=\"disease\"]/text', "
+						+ " 'xxx') as `disease`"
+						+ " FROM `" + DB_SCHEMA_UNIPROT + "`.`raw_xml` WHERE acc=\"" + uacc + "\""
+						);
 				while (rs_function_terms.next()) {
 					String t = rs_function_terms.getString("disease");
 					//if (t != null && t.length() > 0 && !t.equalsIgnoreCase("Not known.") && !t.equalsIgnoreCase("Not yet known."))
@@ -196,8 +206,11 @@ FROM `raw_xml`;
 				statement3.execute("DELETE FROM var_VarImpact.GR_ProteinDisease WHERE ID=" + gene_id);
 				for (String t : all_terms) {
 					t = t.replaceAll("\"", "''");
-					statement4.execute("INSERT IGNORE INTO `" + DB_DESTINATION_SCHEMA + "`.GR_ProteinDisease (`ID`, `disease`) VALUES (" + gene_id + ", \"" + t + "\")");
-					//System.out.println(gene_id + "\t" + uaccs + "\t" + t);
+					String[] ks = t.split("xxx");
+					for (String d : ks) {
+						//statement4.execute("INSERT IGNORE INTO `" + DB_DESTINATION_SCHEMA + "`.GR_ProteinDisease (`ID`, `disease`) VALUES (" + gene_id + ", \"" + d + "\")");
+						System.out.println(gene_id + "\t" + uaccs + "\t" + d);
+					}
 				}
 			}
 		}

@@ -154,16 +154,11 @@ public class StopDictionaryServer {
 	public static void main (String[] args) {
 		if (args.length == 0 || args[0].toLowerCase().matches("\\-\\-h(elp)?") || !args[0].matches("\\d+")) {
 			System.out.println("StopDictionaryServer taxon {-pass=<passphrase>}");
+			System.out.println("Stops the dictionary server running for the specified taxon (such as 9606 for human).\n"
+					         + "If you started the server with a passphrase, the same passphrase needs to be supplied to stop it.\n"
+					         + "By default, the passphrase given in the properties file will be used for starting and stopping a server.");
 			System.exit(0);
 		}
-
-		//int taxon = -1;
-		//int port  = -1;
-		//if (args[0].startsWith("-t=")) {
-		//	taxon = Integer.parseInt(args[0].replaceFirst("\\-\\-?t(axon)?=", ""));
-		//} else {
-		//	System.err.println("Specify a taxon ID corresponding to the dictionary server to stop.");
-		//}
 
 		int taxon = Integer.parseInt(args[0]);
 		if (args.length > 2 && args[1].matches("\\-\\-?p(assphrase)?=(.+)")) {
