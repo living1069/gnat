@@ -184,20 +184,31 @@ public class UnspecificNameFilter implements Filter {
 		}
 
 		// units and some typical mistakes (and 1, or in) --> bp has to keep Bp50!
-		if (term.matches("^(aa|bp\\s[0-9]{1,2}|kd|mg|Ki|nM|CD|Sci|Proc|Acad|\\d+ h" +
+		if (term.matches("^(aa|bp\\s[0-9]{1,2}|kd|mg|Ki|nM|CD|Sci|Proc|Acad" +
 				//"|[\\d\\.]+[\\s\\-]?[Kk][Dd][Aa]" +
-				"|(?:a )?[\\d+\\.][\\-\\s][Kk][Dd][Aa](?: protein)?" +
 				
-				"|or\\sin|and\\s[1Ii]|for\\s4|is\\s4|[Aa]\\sgene|[Aa]t\\s5|[Aa]\\sC|is\\s1|at\\s\\d" +
-				"|as a|a PS|or if|a [ACGTU]|[dD] or|a part|[A-Za-z][A-Za-z] as" + // "HR as"
-				"|and 1|or 2|an \\d+" +
-
+				"|or in|and [1Ii]|[Aa] gene"+
+				
+				//typical error when converting PDF to text: white space between every pair of characters, producing a ton of (NER) FP
+				"|. .|. . .|. . .( .)+" +
+				//"|[a-z] [a-z]|[a-z] [a-z] [a-z]|[a-z] [a-z] [a-z]( [a-z])+" +
+				//"|a [ACGTU]|\\d+ h|[Aa]\\sC" + // removed after adding ". ."
+				
+				
+				"|as a|a PS|or if|or is|[A-Za-z] or|a part|[A-Za-z][A-Za-z] as" + // "HR as"
+				"|and \\d+|or \\d+|an \\d+|for \\d+|is \\d+|[Aa]t\\d+" +
+				"|is [VvIiXx]" +
+				"|per \\d+|OR \\d+|six \\d+|F \\d+" +
+				//"|or \\d+|at \\d+|is \\d+" +
+				"|at \\d+ d|s to|acid 2|HS is" + 
+				
+				"|(?:a )?[\\d+\\.][\\-\\s][Kk][Dd][Aa](?: protein)?" + // "15 kDa protein"
 				"|factor[\\s\\-]\\d|factor[\\s\\-](alpha|beta|gamma|delta)" +
 				"|receptor\\s\\d|[Ii]soforms?[\\s\\-]?\\d+|[Ii]sozymes?[\\s\\-]\\d+?" +
-				"|[A-Z]\\receptor|S phase" +
+				"|[A-Z] receptor|S phase" +
 				"|open reading frame" +
 				"|pulmonary function" +
-				"|MHC\\s[Cc]lass\\s[Ii][Ii]?" +
+				"|MHC\\s[Cc]lass [Ii][Ii]?" +
 				
 				"|Part I|[Uu]rinary protein|urine protein" +
 				"|death[\\-\\s]inducing|early[\\-\\s]response|[Nn]on\\-histone[\\-\\s]chromosomal" +
@@ -313,7 +324,10 @@ public class UnspecificNameFilter implements Filter {
 				"|Ca2|CA|C\\-C|CHO|Cys|pro|how|early|similar|no|period|rod" +
 				"|interleukins|releases?|origins?|chemokines?|sons?|nets?" +
 				//"|LPS" +
+				
+				// this one is pretty general but removes a lot of FP; double-check again?
 				"|[a-z]+s" + // caspases, kinases
+				
 				// added for Lupus/IBD project:
 				"|mild|platelet|drip|sera|neo|radix|spliceosomal|hip" +
 				"|Chi|dot|rash|BMI|toll|min|lethal|pan|Med|celiac" +
@@ -328,11 +342,12 @@ public class UnspecificNameFilter implements Filter {
 				"|pituitary" +
 				// application to Medline XML found these:
 				"|ANOVA|flap|jaw|hook|wash|grid|scan|rage|coil|Poly|poly|ate|semi|ankle|fat-free|HDL|LDL|CHD|Mir|cited|hangover" +
-				"|per \\d+|or \\d+|OR \\d+|six \\d+|F \\d+|at \\d+|is \\d+|\\-19|n-3|at \\d+ d|s to|acid 2|HS is" +
+				"|\\-19|n-3" +
 				"|pin|cramp|Vmax|chip|mix|max|spatial|c nu|scar|or VE|Platelet|Mn|ash|jade|cod|lip|tan|Amid|sec|lime" +
 				"|coreceptor|inter|stab|oligo|rim|peri|chi|mer|mol|sink|as L|kit|Pigs|goat|jet|taxi|lab|mask|patched" +
 				// medline 2015:
 				"|miR|click|spin|pen|flip|Tumor|lobe|longevity|gem|expanded|ATP|ADP|PR 1|Carlo" +
+				"|Fig|HCl|FBS" +
 				")");
 	}
 
