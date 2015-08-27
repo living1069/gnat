@@ -25,3 +25,4 @@
 31033	56023	T. rubripes	takifugu	tiger puffer
 4577	56024	zea mays	maize
 11676	56025	HIV1	human immunodeficiency virus 1
+999999999	56099	GO/MeSH	GO and MeSH terms
