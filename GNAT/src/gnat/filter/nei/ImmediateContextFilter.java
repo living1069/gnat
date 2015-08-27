@@ -198,7 +198,11 @@ public class ImmediateContextFilter implements Filter {
 //									 && (keepDiseaseName(longFormName, sentence) || keepDiseaseName(shortForm.getName(), sentence) )
 //								   )
 								|| sentence.matches(".*" + sfCopy + "\\)\\s(gene|protein|mRNA|cDNA|isoform|isozym).*")
-								|| sentence.matches(".*(gene|protein|mRNA|cDNA)s?.*" + lfCopy + ".*" + shortForm.toString().replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\{\\}])", "\\\\$1") + ".*")
+								|| sentence.matches(".*(gene|protein|mRNA|cDNA)s?.*" + lfCopy + ".*" +
+										sfCopy
+										//shortForm.toString().replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\{\\}])", "\\\\$1")
+										+ ".*"
+								)
 
 					)
 				{
