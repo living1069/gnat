@@ -482,7 +482,7 @@ public class AnnotateMedline {
 					annotatedText = annotatedText.substring(0, se.getBegin()) + insert + annotatedText.substring(se.getBegin());
 				}
 
-				System.err.println("#INFO annotated=" + annotatedText);
+				//System.err.println("#INFO annotated=" + annotatedText);
 				//System.err.println("#Annotated text:\n"+annotatedText+"\n----------");
 
 				//System.err.println("#INFO sourceType=" + text.sourceType.toString());
@@ -512,7 +512,7 @@ public class AnnotateMedline {
 						b.append(multilines[0].replaceFirst("^.+?[\\.\\!\\?]\\s(.*)$", "$1"));
 						b.append("\n");
 						for (int l = 1; l < multilines.length; l++) {
-							System.out.println("#INFO appending " + multilines[l]);
+							//System.out.println("#INFO appending " + multilines[l]);
 							b.append(multilines[l] + "\n");
 						}
 						annotatedTextWithoutTitle = b.toString();
@@ -522,7 +522,7 @@ public class AnnotateMedline {
 						annotatedTextWithoutTitle = annotatedText.replaceFirst("^.+?[\\.\\!\\?]\\s(.*)$", "$1");
 					}
 					
-					System.err.println("#INFO annotatedTextWithoutTitle = " + annotatedTextWithoutTitle);
+					//System.err.println("#INFO annotatedTextWithoutTitle = " + annotatedTextWithoutTitle);
 					
 					text.annotateXmlTitle(annotatedTitle);
 					text.annotateXmlAbstract(annotatedTextWithoutTitle);
@@ -549,7 +549,7 @@ public class AnnotateMedline {
 						basefilename = basefilename.replaceFirst(".medline", ".annotated.medline");
 
 					String x = text.toXmlString();
-					System.err.println("#INFO x = " + x);
+					//System.err.println("#INFO x = " + x);
 					// texts that are part of a collection within one file get stored
 					// in a buffer for that file; we're storing this buffer in memory
 					// and write it to disk, together with appropriate XML root elements,
