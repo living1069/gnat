@@ -198,11 +198,11 @@ public class ImmediateContextFilter implements Filter {
 //									 && (keepDiseaseName(longFormName, sentence) || keepDiseaseName(shortForm.getName(), sentence) )
 //								   )
 								|| sentence.matches(".*" + sfCopy + "\\)\\s(gene|protein|mRNA|cDNA|isoform|isozym).*")
-								|| sentence.matches(".*(gene|protein|mRNA|cDNA)s?.*" + lfCopy + ".*" +
+								|| sentence.matches(".*(gene|protein|mRNA|cDNA|[a-z]ase|[a-z]tor)s?.*" + lfCopy + ".*" +
 										sfCopy
 										//shortForm.toString().replaceAll("([\\+\\-\\*\\(\\)\\[\\]\\{\\}])", "\\\\$1")
-										+ ".*"
-								)
+										+ ".*")
+								//|| sentence.toLowerCase().matches(".*(protein|gene|mnra|cdna|[a-z]+ase|[a-z]+tor)s?.*")
 
 					)
 				{
@@ -211,10 +211,12 @@ public class ImmediateContextFilter implements Filter {
 			}
 
 
-			if(!keepShortFormName){
-				//if (ConstantsNei.OUTPUT_LEVEL.compareTo(ConstantsNei.OUTPUT_LEVELS.DEBUG) >= 0)
-				//	System.out.println("#ICF: Kicking sfn. " + shortForm.getName() + " in " + shortFormPMID +
-				//			", \"" + sentence + "\"");
+			if(!keepShortFormName) {
+				if (ConstantsNei.OUTPUT_LEVEL.compareTo(ConstantsNei.OUTPUT_LEVELS.DEBUG) >= 0) {
+					String sentence = shortForm.getText().getSentenceAround(shortForm.getAnnotation().getTextRange().getBegin());
+					System.out.println("#ICF: Kicking sfn. " + shortForm.getName() + " in " + shortFormPMID +
+							", \"" + sentence + "\"");
+				}
 				context.removeEntitiesHavingName(shortForm.getName(), shortForm.getText());
 			}
 

@@ -85,7 +85,8 @@ public class DefaultSpeciesRecognitionFilter implements Filter {
 	static final String PATTERN_FRUITFLY = PATTERN_LEFT +
 			"(" +
 			"[Ff]ruit[\\s\\-]?[Ff]ly|[Ff]lies|[Ff]ly" +
-			"|[Dd](?:\\.|rosophilae?)|[Dd](?:\\.|rosophila)\\s[Mm]el(\\.|anogaster)" +
+			//"|[Dd](?:\\.|rosophilae?)" + 
+			"|[Dd](?:\\.|rosophila)\\s?[Mm]el(\\.|anogaster)" +
 			")" +
 			PATTERN_RIGHT;
 
@@ -288,10 +289,10 @@ public class DefaultSpeciesRecognitionFilter implements Filter {
 					System.out.println("#DSRF: no taxIds found for " + text.PMID + ". Using default: " + taxonIDs);
 			}
 			
-			text.setTaxonIDs(taxonIDs);
-			text.addTaxonToNameMap(id2names);
 			if (debug)
 				System.out.println("#DSRF: for text " + text.PMID + ", found species " + taxonIDs);
+			text.addTaxonIDs(taxonIDs);
+			text.addTaxonToNameMap(id2names);
 			
 			allTaxonIDs.addAll(id2names.keySet());
 		} // for each text

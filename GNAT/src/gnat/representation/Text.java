@@ -298,6 +298,11 @@ public class Text {
 	public void setTaxonIDs (Set<Integer> taxonIDs) {
 		this.taxonIDs = taxonIDs;
 	}
+	
+	
+	public void addTaxonIDs (Set<Integer> taxonsIDs) {
+		this.taxonIDs.addAll(taxonIDs);
+	}
 
 	
 	/**

@@ -269,7 +269,9 @@ public class UnspecificNameFilter implements Filter {
 				"|heat|shock|proteoglycan|core|homeobox" +
 				//"" +
 				"|chemokine|cytokine|potassium|calcium|sodium|retinol|pyruvate|vitamin|glutamate|[Zz]inc" +
-				"|estrogen|thrombin|arrestin|actin|ubiquitin|mucin|urotensin|disintegrin|activin|chromatin|calmodulin" +
+				"|estrogen|thrombin|arrestin|actin" +
+				"|ubiquitin" + 
+				"|mucin|urotensin|disintegrin|activin|chromatin|calmodulin" +
 				"|tubulin|cyclin|immunoglobulin|heparin|GTP" +
 				"|tyrosine|serine|threonine|alanine|arginine|asparagine|cysteine|glutamine|leucine|isoleucine" +
 				"|glycine|methionine|histidine|proline|lysine|phenylalanie|thryptophan|valine" +
@@ -347,7 +349,7 @@ public class UnspecificNameFilter implements Filter {
 				"|coreceptor|inter|stab|oligo|rim|peri|chi|mer|mol|sink|as L|kit|Pigs|goat|jet|taxi|lab|mask|patched" +
 				// medline 2015:
 				"|miR|click|spin|pen|flip|Tumor|lobe|longevity|gem|expanded|ATP|ADP|PR 1|Carlo" +
-				"|Fig|HCl|FBS" +
+				"|Fig|HCl|FBS|phospho|AND" +
 				")");
 	}
 
@@ -386,6 +388,7 @@ public class UnspecificNameFilter implements Filter {
 		if (name.length() > 2) return false;
 		// fruit fly names can have one or two characers: a, e, v, ... so skip those
 		if (name.length() <= 2 && !speciesIDs.contains(7227)) {
+			if (name.matches("H([2-9]|\\d\\d+)")) return false;
 			String maskedName = StringHelper.escapeString(name);
 			if (sentence.matches(".*[\\s\\(]" + maskedName + "[\\s\\,\\)]([^\\s]+\\s)?(gene|protein|locus|loci)s?.*")) return false;
 			if (sentence.matches(".*(gene|protein|locus\\sfor|loci\\sfor)s?[\\s\\,\\)]([^\\s]+\\s)?[\\(\\s]?" + maskedName + "[\\s\\,\\)].*")) return false;
@@ -518,6 +521,8 @@ public class UnspecificNameFilter implements Filter {
 	public static boolean isCellLine (String name, String sentence) {//, String text) {
 		// mask any characters that have a meaning in reg.exes
 		String maskedName = StringHelper.escapeString(name);
+		
+		if (sentence.matches(".* (WT|wild[ -]?type)" + leftWordBoundary  + maskedName + rightWordBoundary + ".*")) return false;
 		
 		if (sentence.matches(".*" + leftWordBoundary  + maskedName + rightWordBoundary + "(cell|culture)s?.*"))
 			return true;
