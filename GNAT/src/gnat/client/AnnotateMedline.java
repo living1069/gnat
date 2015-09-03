@@ -340,9 +340,6 @@ public class AnnotateMedline {
 			// strictFPs_2_2_context_all.object contains data on the context defined by two tokens left and two tokens right of a gene name
 			//run.addFilter(new LeftRightContextFilter("data/strictFPs_2_2_context_all.object", "data/nonStrictFPs_2_2_context_all.object", 0d, 2, 2));
 	
-			//
-			run.addFilter(new ImmediateContextFilter());
-			
 			// load the gene repository to obtain information on each gene (if only the species)
 			// not loading gene repository will produce an empty result at the end
 			run.addFilter(new GeneRepositoryLoader(GeneRepositoryLoader.RetrievalMethod.DATABASE));
