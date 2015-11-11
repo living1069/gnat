@@ -1,30 +1,16 @@
 package gnat.client;
 
-import gnat.ISGNProperties;
-import gnat.filter.RunAdditionalFilters;
-import gnat.filter.nei.AlignmentFilter;
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
 import gnat.filter.nei.GeneRepositoryLoader;
 import gnat.filter.nei.IdentifyAllFilter;
-import gnat.filter.nei.ImmediateContextFilter;
-import gnat.filter.nei.LeftRightContextFilter;
-import gnat.filter.nei.MultiSpeciesDisambiguationFilter;
-import gnat.filter.nei.NameValidationFilter;
-import gnat.filter.nei.RecognizedEntityUnifier;
-import gnat.filter.nei.StopWordFilter;
-import gnat.filter.nei.UnambiguousMatchFilter;
-import gnat.filter.nei.UnspecificNameFilter;
 import gnat.filter.ner.GnatServiceNer;
-import gnat.filter.ner.LinnaeusSpeciesServiceNer;
-import gnat.filter.ner.RunAllGeneDictionaries;
 import gnat.preprocessing.NameRangeExpander;
 import gnat.representation.Text;
 import gnat.representation.TextFactory;
 import gnat.server.GnatService;
-import gnat.utils.AlignmentHelper;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A simple example pipeline for Gene Mention Normalization, which runs a fixed set of filters.
