@@ -225,7 +225,8 @@ public class DictionaryServer extends Server {
 				if (args[a].matches("\\-\\-?v(erbosity)?=(\\d+)")) {
 					dictionaryServer.logLevel = Integer.parseInt(args[a].replaceFirst("^\\-\\-?v(erbosity)?=(\\d+)$", "$2"));	
 				} else if (args[a].matches("\\-\\-?p(assphrase)?=(.+)")) {
-					dictionaryServer.stopPassphrase = args[a].replaceFirst("^\\-\\-?p(assphrase)?=(.+)$", "$2");	
+					//dictionaryServer.
+					stopPassphrase = args[a].replaceFirst("^\\-\\-?p(assphrase)?=(.+)$", "$2");	
 				}
 			}
 		}		

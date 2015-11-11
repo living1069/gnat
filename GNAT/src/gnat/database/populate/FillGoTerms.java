@@ -1,7 +1,5 @@
 package gnat.database.populate;
 
-import gnat.ISGNProperties;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;

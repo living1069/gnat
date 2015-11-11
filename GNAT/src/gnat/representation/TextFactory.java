@@ -404,7 +404,7 @@ public class TextFactory {
 			if (filename.endsWith(".gz")) {
 				//System.err.println("Opening a GZipped files");
 				InputStream fileStream = new FileInputStream(filename);
-				@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
+				InputStream gzipStream = new GZIPInputStream(fileStream);
 				Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
 				br = new BufferedReader(decoder);
 			} else {
@@ -565,7 +565,7 @@ public class TextFactory {
 			if (filename.endsWith(".gz")) {
 				//System.err.println("Opening a GZipped files");
 				InputStream fileStream = new FileInputStream(filename);
-				@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
+				InputStream gzipStream = new GZIPInputStream(fileStream);
 				Reader decoder = new InputStreamReader(gzipStream);//, "UTF-8");
 				br = new BufferedReader(decoder);
 			} else {

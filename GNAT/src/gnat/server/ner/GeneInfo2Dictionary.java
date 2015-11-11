@@ -132,7 +132,7 @@ public class GeneInfo2Dictionary {
 			BufferedReader br = null;
 			if (args[0].endsWith(".gz")) {
 				InputStream fileStream = new FileInputStream(args[0]);
-				@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
+				InputStream gzipStream = new GZIPInputStream(fileStream);
 				Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
 				br = new BufferedReader(decoder);
 			} else {

@@ -1,5 +1,12 @@
 package gnat.filter.ner;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.util.List;
+
 import gnat.ISGNProperties;
 import gnat.filter.Filter;
 import gnat.representation.Context;
@@ -11,16 +18,6 @@ import gnat.representation.TextRange;
 import gnat.representation.TextRepository;
 import gnat.server.AnnotatedText;
 import gnat.utils.StringHelper;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.List;
-
 import uk.ac.man.entitytagger.Mention;
 
 /**
@@ -55,6 +52,7 @@ public class LinnaeusSpeciesServiceNer implements Filter {
 	}
 
 
+	@SuppressWarnings("unchecked")
 	private List<Mention> getMentions(String text){
 		try{
 			Socket socket = new Socket(serverAddr, serverPort);

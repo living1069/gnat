@@ -1,16 +1,15 @@
 package gnat.filter.ner;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import gnat.filter.Filter;
 import gnat.representation.Context;
 import gnat.representation.GeneRepository;
 import gnat.representation.Text;
 import gnat.representation.TextRepository;
-
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * TODO Not fully implemented yet!!!

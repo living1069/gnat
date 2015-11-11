@@ -1,10 +1,5 @@
 package gnat.retrieval;
 
-import gnat.ISGNProperties;
-import gnat.preprocessing.sentences.SentenceSplitter;
-import gnat.preprocessing.sentences.SentenceSplitterRegex;
-import gnat.preprocessing.tokenization.PreTokenizer;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
@@ -19,6 +14,11 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
+
+import gnat.ISGNProperties;
+import gnat.preprocessing.sentences.SentenceSplitter;
+import gnat.preprocessing.sentences.SentenceSplitterRegex;
+import gnat.preprocessing.tokenization.PreTokenizer;
 
 
 /**
@@ -199,7 +199,8 @@ public class PubmedAccess {
 			root.addNamespaceDeclaration(Namespace.getNamespace(NAMESPACE, URI_NAMESPACE));
 			List articleList = root.getChildren("PubmedArticle");
 			Iterator articleIt = articleList.iterator();
-			for (int i = 0; articleIt.hasNext(); i++) {
+			//for (int i = 0; articleIt.hasNext(); i++) {
+			while (articleIt.hasNext()) {
 				Element pubmedArticleElement = (Element) articleIt.next();
 				Element medlineCitElement = pubmedArticleElement.getChild("MedlineCitation");
 				String pmId = medlineCitElement.getChildTextTrim("PMID");
@@ -289,8 +290,16 @@ public class PubmedAccess {
 	}
 
 
+	/**
+	 * Extract the PubMed ID from the given XML document.<br/>
+	 * Will be looking for a PMID element within PubmedArticle or MedlineCitation.
+	 * @param xml
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static String getPubMedIdFromXML (String xml) {
-		String[] abs = new String[0];
+		System.err.println("---HELLO pubmed");
+		//String[] abs = new String[0];
 		try {
 			SAXBuilder builder = new SAXBuilder();
 			
@@ -312,9 +321,10 @@ public class PubmedAccess {
 			}
 			
 			//List articleList = root.getChildren("MedlineCitation");
-			abs = new String[articleList.size()];
+			//abs = new String[articleList.size()];
 			Iterator articleIt = articleList.iterator();
-			for (int i = 0; articleIt.hasNext(); i++) {
+			//for (int i = 0; articleIt.hasNext; i++) {
+			while (articleIt.hasNext()) {
 				Element pubmedArticleElement = (Element) articleIt.next();
 				Element pmidElement = pubmedArticleElement.getChild("PMID");
 				return pmidElement.getTextTrim();
@@ -334,7 +344,7 @@ public class PubmedAccess {
 	 * @param xml
 	 * @return String[]
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static String[] getAbstractsFromXML (String xml) {
 		//System.out.println("analyzing XML=>>" +xml + "<<");
 		String[] abs = new String[0];
@@ -349,10 +359,12 @@ public class PubmedAccess {
 				citationList = root.getChildren("MedlineCitation");
 			// in a PubmedArticleSet ...
 			} else if (root.getName().equals("PubmedArticleSet")) {
+				citationList = new LinkedList();
 				// ... each entry is a PubmedArticle
 				List articleList = root.getChildren("PubmedArticle");
 				Iterator articleIt = articleList.iterator();
-				for (int i = 0; articleIt.hasNext(); i++) {
+				//for (int i = 0; articleIt.hasNext(); i++) {
+				while (articleIt.hasNext()) {
 					Element pubmedArticleElement = (Element) articleIt.next();
 					// and MedlineCitation are childs of PubmedArticle
 					Element citationElement = pubmedArticleElement.getChild("MedlineCitation");
@@ -453,7 +465,8 @@ public class PubmedAccess {
 					List links = linkSetDb.getChildren("Link");
 					if (links != null) {
 						Iterator linkIt = links.iterator();
-						for (int i = 0; linkIt.hasNext(); i++) {
+						//for (int i = 0; linkIt.hasNext(); i++) {
+						while (linkIt.hasNext()) {
 							id = ((Element)linkIt.next()).getChild("Id");
 							pmids.add(id.getTextTrim());
 							// return only a limited set of IDs, given by max

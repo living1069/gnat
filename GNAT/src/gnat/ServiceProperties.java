@@ -9,8 +9,8 @@ import java.util.Properties;
 
 public class ServiceProperties {
 
-	/** */
-	private static final long serialVersionUID = -1379316294752164047L;
+	/*/* */
+	//private static final long serialVersionUID = -1379316294752164047L;
 
 	/** */
 	private static String FILE_PROPERTIES = "service_properties.xml";

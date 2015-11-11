@@ -46,7 +46,7 @@ public class SpeciesIndicators {
 				if (filename.endsWith(".gz")) {
 					//System.err.println("Opening a GZipped files");
 					InputStream fileStream = new FileInputStream(dir + "/" + filename);
-					@SuppressWarnings("resource") InputStream gzipStream = new GZIPInputStream(fileStream);
+					InputStream gzipStream = new GZIPInputStream(fileStream);
 					Reader decoder = new InputStreamReader(gzipStream, "UTF-8");
 					br = new BufferedReader(decoder);
 				} else {
