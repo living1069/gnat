@@ -66,9 +66,9 @@ public class GenePubMedScorer {
 	 * @param goAccess
 	 * @param go2gofile
 	 */
-	public GenePubMedScorer (GOAccess goAccess, String go2gofile) {
+	public GenePubMedScorer (GOAccess goAccess) {
 		goTermScorer = new GOTermSimilarity(goAccess);
-		goTermScorer.loadGOTermDistances(go2gofile);
+		goTermScorer.loadGOTermDistances();
 		goTermScorer.verbosity = this.verbosity-1;
 		//goTermScorer.useDatabase = false;
 		//if (!goTermScorer.useDatabase)
@@ -84,6 +84,7 @@ public class GenePubMedScorer {
 		goTermScorer.writeGOTermDistances();
 		goTermScorer.closeDBConnection();
 	}
+
 
 	/**
 	 * Convenience method. Returns true if cv is not null.
@@ -116,8 +117,6 @@ public class GenePubMedScorer {
 	public Gene disambiguate (Collection<Gene> genes, Text text) {
 		LinkedList<Gene> orderedGenes = new LinkedList<Gene>();
 		orderedGenes.addAll(genes);
-
-		//		LinkedList<HashMap<String, Float>> orderedAllScores = new LinkedList<HashMap<String, Float>>();
 
 		LinkedList<Float> orderedScores = new LinkedList<Float>();
 

@@ -54,7 +54,7 @@ public class DisambiguationFilter implements Filter {
 	public DisambiguationFilter (double threshold, int topNumber) {
 		this.threshold = threshold;
 		this.topNumber = topNumber;
-		genePubMedScorer = new GenePubMedScorer(new GOAccess(), "data/go2go.object");
+		genePubMedScorer = new GenePubMedScorer(new GOAccess());
 		genePubMedScorer.setVerbosity(this.verbosity);
 	}
 
@@ -63,10 +63,10 @@ public class DisambiguationFilter implements Filter {
 	 * @param threshold - removes all genes with a score below this threshold
 	 * @param topNumber - keep this number of IDs per name
 	 */
-	public DisambiguationFilter (GOAccess goAccess, String go2goObjectFile, double threshold, int topNumber) {
+	public DisambiguationFilter (GOAccess goAccess, double threshold, int topNumber) {
 		this.threshold = threshold;
 		this.topNumber = topNumber;
-		genePubMedScorer = new GenePubMedScorer(goAccess, go2goObjectFile);
+		genePubMedScorer = new GenePubMedScorer(goAccess);
 		genePubMedScorer.setVerbosity(this.verbosity);
 	}
 

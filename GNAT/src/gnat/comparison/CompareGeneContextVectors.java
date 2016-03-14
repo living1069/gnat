@@ -22,16 +22,16 @@ public class CompareGeneContextVectors extends CompareContextVectors {
 	}
 
 
-	/**
-	 *
-	 *
-	 */
-	public CompareGeneContextVectors (GOAccess goAccess, String go2gofile) {
-		// load existing go2go hash from object file
-
-		goTermScorer = new GOTermSimilarity(goAccess);
-		goTermScorer.loadGOTermDistances(go2gofile);
-	}
+//	/**
+//	 *
+//	 *
+//	 */
+//	public CompareGeneContextVectors (GOAccess goAccess, String go2gofile) {
+//		// load existing go2go hash from object file
+//
+//		goTermScorer = new GOTermSimilarity(goAccess);
+//		goTermScorer.loadGOTermDistances();//go2gofile);
+//	}
 
 
 	/**

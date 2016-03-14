@@ -56,7 +56,7 @@ public class MultiSpeciesDisambiguationFilter implements Filter {
 	public MultiSpeciesDisambiguationFilter (double threshold, int topNumber) {
 		this.threshold = threshold;
 		this.topNumber = topNumber;
-		genePubMedScorer = new GenePubMedScorer(new GOAccess(), "data/go2go.object");
+		genePubMedScorer = new GenePubMedScorer(new GOAccess());
 		genePubMedScorer.setVerbosity(this.verbosity);
 	}
 	
@@ -151,48 +151,6 @@ public class MultiSpeciesDisambiguationFilter implements Filter {
 		}
 
 		genePubMedScorer.finalize();
-	}
-
-
-	/**
-	 *
-	 * @param context
-	 * @throws IOException
-	 */
-	public void filterX (Context context, String outfile) throws IOException {
-		float overallTopScore = 0;
-
-		FileWriter writer = new FileWriter(outfile);
-
-		Iterator<RecognizedEntity> unidentifiedGeneNames = context.getUnidentifiedEntities().iterator();
-		while (unidentifiedGeneNames.hasNext()) {
-			RecognizedEntity recognizedGeneName = unidentifiedGeneNames.next();
-
-			IdentificationStatus identificationStatus = context.getIdentificationStatus(recognizedGeneName);
-			Set<String> geneIdCandidates = identificationStatus.getIdCandidates();
-
-			//System.out.println("Now disambiguating gene "+recognizedGeneName.getName()+" with "+geneIdCandidates.size()+" candidates...");
-
-			// the text in which this gene name occurs
-			Text text = recognizedGeneName.getText();
-
-			List<ScoredGene> rankedGenes = rankGenesForText (writer, recognizedGeneName.getName(), geneIdCandidates, text);
-
-			if (rankedGenes.size() > 0) {
-				float topScore = rankedGenes.get(0).getScore();
-				if(topScore>overallTopScore){
-					overallTopScore = topScore;
-				}
-				for (int i = 0; i < rankedGenes.size(); i++) {
-					if (rankedGenes.get(i).getScore() < topScore) break;
-					if (rankedGenes.get(i).getScore() < threshold) break;
-					context.identifyAsGene(recognizedGeneName, rankedGenes.get(i).getGene(), rankedGenes.get(i).getScore());
-				}
-			}
-		}
-
-		genePubMedScorer.finalize();
-		writer.close();
 	}
 
 

@@ -40,7 +40,7 @@ public class CompareGeneAndTextContextModels extends CompareContextModels implem
 	 */
 	public CompareGeneAndTextContextModels (GOAccess goAccess, String go2gofile) {
 		goTermScorer = new GOTermSimilarity(goAccess);
-		goTermScorer.loadGOTermDistances(go2gofile);
+		goTermScorer.loadGOTermDistances();//go2gofile);
 	}
 
 

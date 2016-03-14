@@ -44,9 +44,16 @@ public class GOTermSimilarity implements Serializable {
 	/** Stores the distances between two GO codes. Key: "GO:0005575;GO:0001695". */
 	private Map<String, Float> goTermDistances = new HashMap<String, Float>();
 
-	/** Where to find the existing GO term distances. Default: go2go.obj.<br>
-	 * Format: HashMap&lt;String, Float&gt;, see <code>goTermDistances</code>. */
-	public String go2gofile = "data/go2go.object";
+	/** Where to find the existing GO term distances. Default: go2go.object.<br>
+	 *  Can be changed in properties.xml, field: go2gofile.<br>
+	 *  <br>
+	 *  Format: HashMap&lt;String, Float&gt;, see <code>goTermDistances</code>. */
+	public static String go2gofile = "data/go2go.object";
+	static {
+		String propFile = ISGNProperties.get("go2gofile");
+		if (propFile != null && propFile.length() > 0)
+			go2gofile = propFile;
+	}
 
 	private int initiallyLoadedSimilarities = 0;
 	private boolean computedNewSimilarity = false;
@@ -243,12 +250,11 @@ public class GOTermSimilarity implements Serializable {
 	 * @param filename
 	 */
 	@SuppressWarnings("unchecked")
-	public void loadGOTermDistances (String filename) {
-		go2gofile = filename;
+	public void loadGOTermDistances () {
 
 		FileInputStream fis = null;
 		ObjectInputStream in = null;
-		File FILE = new File(filename);
+		File FILE = new File(go2gofile);
 		try {
 			fis = new FileInputStream(FILE);
 			in = new ObjectInputStream(fis);
@@ -360,7 +366,7 @@ public class GOTermSimilarity implements Serializable {
 
 		GOTermSimilarity goScorer = new GOTermSimilarity(new GOAccess(ISGNProperties.get("dbDriver"), ISGNProperties.get("dbAccessUrl"),
 				ISGNProperties.get("dbUser"), ISGNProperties.get("dbPass")));
-		goScorer.loadGOTermDistances("data/go2go.obj");
+		goScorer.loadGOTermDistances();//"data/go2go.obj");
 
 		for (String c: gene)
 			codes1.add(c);

@@ -22,7 +22,7 @@ public class TestCase {
 
 	GeneRepository generep = new GeneRepository();
 
-	GenePubMedScorer genePubMedScorer = new GenePubMedScorer(new GOAccess(), "data/go2go.object");
+	GenePubMedScorer genePubMedScorer = new GenePubMedScorer(new GOAccess());
 
 	LinkedList<String> ids2check = new LinkedList<String>();
 
